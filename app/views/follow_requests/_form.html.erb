@@ -14,6 +14,8 @@
   <%= form.hidden_field :recipient_id %>
 
   <div class="actions">
+  <% if follow_request.recipient_id != current_user.id %>
     <%= form.submit "Follow", class: "btn btn-outline-secondary btn-block" %>
+    <% end %>
   </div>
 <% end %>

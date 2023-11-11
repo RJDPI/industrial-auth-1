@@ -6,7 +6,8 @@
       <%= link_to photo.owner.username, user_path(photo.owner.username), class: "text-dark" %>
     </h2>
 
-    <% if current_user == photo.owner %>
+    <%# if current_user == photo.owner %>
+    <% if policy(photo).edit? %>
       <div>
         <%= link_to edit_photo_path(photo), class: "btn btn-link btn-sm text-muted" do %>
           <i class="fas fa-edit fa-fw"></i>
@@ -27,7 +28,8 @@
       <%= render "comments/comment", comment: comment %>
     <% end %>
   </ul>
-  <% if current_user == photo.owner || !photo.owner.private? || current_user.leaders.include?(photo.owner) %>
+  <%# if current_user == photo.owner || !photo.owner.private? || current_user.leaders.include?(photo.owner) %>
+  <% if policy(photo).show? %>
   <div class="card-body">
     <%= render "comments/form", comment: photo.comments.build %>
   </div>
