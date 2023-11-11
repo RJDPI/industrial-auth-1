@@ -50,6 +50,7 @@
       </div>
 
       <div class="col">
+      <% if current_user == user %>
         <%=
           link_to "#",
             data: { 
@@ -63,6 +64,7 @@
           
           pending
 
+        <% end %>
         <% end %>
       </div>
     </div>

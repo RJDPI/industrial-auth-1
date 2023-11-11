@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   resources :likes, only: [:create, :destroy]
   resources :photos, except: [:index]
 
+  
+
   get ":username" => "users#show", as: :user
   get ":username/liked" => "users#liked", as: :liked
   get ":username/feed" => "users#feed", as: :feed
