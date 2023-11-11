@@ -1,7 +1,16 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy ]
+  before_action :ensure_current_user_is_author, only: %i[ destroy edit ]
+  before_action :is_an_authorized_user, only: [:destroy, :create]
+  # GET /comments or /comments.json1
 
-  # GET /comments or /comments.json
+  def is_an_authorized_user
+    @photo = Photo.find(params.fetch(:comment).fetch(:photo_id))
+    if current_user != photo.owner && @photo.owner.private? && !current_user.leaders.include?(@photo.owner)
+      redirect_back fallback_location: root_url, alert: "Not authorized"
+    end
+  end
+
   def index
     @comments = Comment.all
   end
@@ -63,8 +72,22 @@ class CommentsController < ApplicationController
       @comment = Comment.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
-    def comment_params
-      params.require(:comment).permit(:author_id, :photo_id, :body)
+  # Only allow a list of trusted parameters through.
+  def comment_params
+    params.require(:comment).permit(:author_id, :photo_id, :body)
+  end
+
+  def ensure_current_user_is_author
+    if current_user != @comment.author
+      redirect_back fallback_location: root_url, alert: "You are not authorized to do that."
     end
+  end
+
+
+  def is_an_authorized_user
+    @photo = Photo.find(params.fetch(:comment).fetch(:photo_id))
+    if current_user != @photo.owner && @photo.owner.private? && !current_user.leaders.include?(@photo.owner)
+      redirect_back fallback_location: root_url, alert: "Not authorized"
+    end
+  end
 end
